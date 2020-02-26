@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-# Homework 2
-# Implementation of naive edit distance problem using recursion.
+    Homework 2
+    Implementation of edit distance problem using recursion.
 
-@authors: Owen Bezick & Morgan Dunnigan
-Created on Tue Feb 25 12:44:55 2020
+    @authors: Owen Bezick & Morgan Dunnigan
+    Created on Tue Feb 25 12:44:55 2020
 """
 
 
