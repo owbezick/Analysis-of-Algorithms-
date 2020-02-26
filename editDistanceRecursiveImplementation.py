@@ -46,22 +46,22 @@ def editDistance(x, y, transformations, newX):
         return values
         
     # If the two indices are the same 
+    # Should be good to keep the same
     if x[0] == y[0]:
         newX = newX + y[0]
         transformations = transformations + 'C'
         return editDistance(x[1:], y[1:], transformations, newX)
-        
+    # Three different recursive calls. 
     else:
-        # If next y is the same as current x
-        if x[1] == y[0]:
-            newX = newX + ' '
-            transformations = transformations + 'D'
-            return editDistance(x[1:], y, transformations, newX)
-        else:
-            newX = newX + y[0]
-            transformations = transformations + 'R'
-            return editDistance(x[1:], y[1:], transformations, newX)
-            
+        # one for adding the space
+        newXD = newX + ' '
+        transformations = transformations + 'D'
+        return editDistance(x[1:], y, transformations, newXD)
+        # One for replace
+        newXR = newX + y[0]
+        transformations = transformations + 'R'
+        return editDistance(x[1:], y[1:], transformations, newXR)
+        # Still not sure about the third one...
             
 def calcCost(transformations, costDict):
     """ Calculates the cost of the transformations.
