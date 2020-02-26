@@ -51,7 +51,8 @@ def editDistance(x, y, transformations, newX):
         newX = newX + y[0]
         transformations = transformations + 'C'
         return editDistance(x[1:], y[1:], transformations, newX)
-    # Three different recursive calls. 
+    # TODO: Three different recursive calls. 
+    # Choose the minimum cost of the three.
     else:
         # one for adding the space
         newXD = newX + ' '
