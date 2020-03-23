@@ -9,6 +9,7 @@
 
 - Overall, the algorithm is correct in structure
 - I couldn't run the tests GATTACA->BUATTAA and GATTACA->ATACAB 
+
 - If you try strings of different length, you have a problem on line 27. 
 You invert the indexes of source/dest in the for loop 
 - In your reconstruction of the alignment, you should have three indexes,
@@ -83,6 +84,7 @@ def dynamicEditDistance(source, destination):
             j = j - 1
 
     # Trace back through transition table to get the new string
+    # Reconstruction of alignment?
     newString = ''
     i = 0
     c = 0
@@ -112,7 +114,7 @@ def dynamicEditDistance(source, destination):
 # Wrapper function
 def main():
     source = "GATTACA"
-    destination = "CATACAC"
+    destination = "ATACAB"
     dynamicEditDistance(source, destination)
 
 
