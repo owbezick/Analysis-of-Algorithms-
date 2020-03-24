@@ -1,115 +1,89 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-    Homework 2
+    Homework 2 Corrections
+    Quiz 3 Implementation
     Implementation of edit distance problem using Dynamic Programming.
 
-    @authors: Owen Bezick & Morgan Dunnigan
-
-
-- Overall, the algorithm is correct in structure
-- I couldn't run the tests GATTACA->BUATTAA and GATTACA->ATACAB 
-
-- If you try strings of different length, you have a problem on line 27. 
-You invert the indexes of source/dest in the for loop 
-- In your reconstruction of the alignment, you should have three indexes,
- one for the source, another for the destination, and one for the operation 
- that you are currently examining.
+    @authors: Owen Bezick
  
 """
 
 
 def dynamicEditDistance(source, destination):
     # Instantiate Tables
-    costTable = [[0 for x in range(1+ len(destination))] for y in range(1+len(source))]
+    costTable = [[0 for x in range(1+ len(source))] for y in range(1+len(destination))]
     costTable[0][0] = 0
-    transformationTable = [[0 for x in range(1+ len(destination))] for y in range(1+len(source))]
     
     # Fill in first row and column
-    for i in range(1, 1 + len(destination)):
-        costTable[0][i] = 1 + costTable[0][i-1]
-        transformationTable[0][i] = 'D'
     for i in range(1, 1 + len(source)):
+        costTable[0][i] = 1 + costTable[0][i-1]
+    for i in range(1, 1 + len(destination)):
         costTable[i][0] = costTable[i-1][0] + 1
-        transformationTable[i][0] = 'I'
+ 
     
-    # Iterate over source and destination and fill in tables
+    # Iterate over source and destination and fill in tables    
     for i in range(1, 1 + len(destination)):
         for j in range(1,1 +  len(source)):
             # If transformation is a copy
-            if destination[j-1] == source[i-1]:
-                costTable[j][i] = costTable[j-1][i-1]
-                transformationTable[j][i] = 'C'
+            if destination[i-1] == source[j-1]:
+                costTable[i][j] = costTable[i-1][j-1]
             else:
                 # Create Costs
-                deleteCost = costTable[j][i-1] + 1
-                insertCost = costTable[j-1][i] + 1
-                replaceCost = costTable[j-1][i-1] + 1.5
+                deleteCost = costTable[i][j-1] + 1
+                insertCost = costTable[i-1][j] + 1
+                replaceCost = costTable[i-1][j-1] + 1.5
                 # Find minimum cost
                 minCost = min(deleteCost, insertCost, replaceCost) 
                 # Place in cost table
-                costTable[j][i] = minCost
-                # Fill transformation table
-                if minCost == replaceCost:
-                    transformationTable[j][i] = 'R'
-                elif minCost == deleteCost:
-                    transformationTable[j][i] = 'D'
-                else:
-                    transformationTable[j][i] = 'I'
+                costTable[i][j] = minCost
 
-    
     # Create the string of transformations
-    i = len(source)
-    j = len(destination)
-    transformationString =  transformationTable[i][j]
-    while i != 0 and j != 0:
+    i = len(destination)
+    j = len(source)
+    transformationString = ""
+    while i > 0 or j > 0:
         left = costTable[i][j - 1]
         top = costTable[i - 1][j]
         diag = costTable[i -1][j -1]
         minCost = min(left, top, diag)
 
-        if diag == costTable[i][j]:
+        if minCost == diag:
             transformationString = 'C' + transformationString
             i = i - 1
             j = j - 1
         elif minCost == left:
-            transformationString = 'I' + transformationString
+            transformationString = 'D' + transformationString
             j = j - 1
         elif minCost == top:
-            transformationString = 'D' +  transformationString
+            transformationString = 'I' +  transformationString
             i = i - 1
         else:
             transformationString =  'R' +  transformationString
             i = i - 1
             j = j - 1
 
-    # Trace back through transition table to get the new string
-    # Reconstruction of alignment?
-    newString = ''
-    i = 0
-    c = 0
-    while i < len(transformationString):
-        if transformationString[i] == 'C':
-            newString = newString + destination[c]
-            i+=1
-            c+=1
-        elif transformationString[i] == 'R':
-            newString = newString + destination[c]
-            i+=1
-            c+=1
-        elif transformationString[i] == 'I':
-            newString = newString + destination[c]
-            i+=1
-            c+=1
-        else:
-            newString = newString + ' '
-            i+=1
-
-    # Print out results
-    print('Transformations:', transformationString)
-    print('New String:', newString)
-    print('Cost:', costTable[len(source)][len(destination)])
-
+    # Print Statements
+    if transformationString[0] == 'I':
+            source = '_' + source
+            
+    if transformationString[len(transformationString) -1] == 'I':
+        source = source +'_'
+            
+    print('='*len(transformationString))
+    print(source)
+        
+    for i in range(len(transformationString)):
+        if transformationString[i] == 'D':
+            destination = destination[:i] + ' ' + destination[i:]
+        if transformationString[i] == 'I':
+            source = source[:i] + '_' + source[i:]
+            
+    print(destination)
+    print('='*len(transformationString))
+    print(transformationString)
+    print("Total cost:", costTable[-1][-1])
+    
 
 # Wrapper function
 def main():
