@@ -22,9 +22,9 @@ def dynamicEditDistance(source, destination):
         costTable[i][0] = costTable[i-1][0] + 1
  
     
-    # Iterate over source and destination and fill in tables    
+    # Iterate over source and destination and fill in cost table    
     for i in range(1, 1 + len(destination)):
-        for j in range(1,1 +  len(source)):
+        for j in range(1,1 +  len(source)):                
             # If transformation is a copy
             if destination[i-1] == source[j-1]:
                 costTable[i][j] = costTable[i-1][j-1]
@@ -33,31 +33,54 @@ def dynamicEditDistance(source, destination):
                 deleteCost = costTable[i][j-1] + 1
                 insertCost = costTable[i-1][j] + 1
                 replaceCost = costTable[i-1][j-1] + 1.5
-                # Find minimum cost
-                minCost = min(deleteCost, insertCost, replaceCost) 
+                minCost = min(deleteCost, insertCost, replaceCost)
+                if i > 2 and j >  2:
+                    exchangeCost = costTable[i-2][j-2] + 1.8
+                    minCost = min(minCost, exchangeCost)                     
+                if i == len(destination) and j >= len(destination):
+                    killCost = costTable[i][j-4] + 3
+                    minCost = min(minCost, killCost)
+                    if minCost == killCost:
+                        for k in range(j, len(source) + 1):
+                            costTable[i][k] = minCost
+                        break
                 # Place in cost table
                 costTable[i][j] = minCost
-
+        
     # Create the string of transformations
+    # edge cases for copy and exchange 
     i = len(destination)
     j = len(source)
     transformationString = ""
     while i > 0 or j > 0:
-        left = costTable[i][j - 1]
-        top = costTable[i - 1][j]
-        diag = costTable[i -1][j -1]
-        minCost = min(left, top, diag)
-
-        if minCost == diag:
+        delete = costTable[i][j - 1]
+        insert = costTable[i - 1][j]
+        copy = costTable[i -1][j -1]
+        minCost = min(delete, copy, insert)
+        if i == len(destination) and j >= len(destination):
+             killCost = costTable[i][len(destination)]
+             minCost = min(minCost, killCost)
+        if i > 2 and j > 2 and source[j-1]==destination[i-2] and source[j-2] == destination[i-1]:
+             exchange = costTable[i-2][j-2]
+             minCost = min(minCost, exchange)
+             if minCost == exchange:
+                 transformationString = 'EE' + transformationString
+                 i = i - 2
+                 j = j - 2
+        if minCost == copy:
             transformationString = 'C' + transformationString
             i = i - 1
             j = j - 1
-        elif minCost == left:
+        elif minCost == delete:
             transformationString = 'D' + transformationString
             j = j - 1
-        elif minCost == top:
+        elif minCost == insert:
             transformationString = 'I' +  transformationString
             i = i - 1
+        
+        elif minCost == killCost:
+            transformationString = 'K' + transformationString
+            j = len(destination)
         else:
             transformationString =  'R' +  transformationString
             i = i - 1
@@ -70,7 +93,7 @@ def dynamicEditDistance(source, destination):
     if transformationString[len(transformationString) -1] == 'I':
         source = source +'_'
             
-    print('='*len(transformationString))
+    print('='* len(transformationString))
     print(source)
         
     for i in range(len(transformationString)):
@@ -87,8 +110,8 @@ def dynamicEditDistance(source, destination):
 
 # Wrapper function
 def main():
-    source = "GATTACA"
-    destination = "ATACAB"
+    source = "this_is_too_longggggggg"
+    destination = "this_is_cool"
     dynamicEditDistance(source, destination)
 
 
