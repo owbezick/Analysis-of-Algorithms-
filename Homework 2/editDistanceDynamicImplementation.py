@@ -46,6 +46,9 @@ def dynamicEditDistance(source, destination):
                         break
                 # Place in cost table
                 costTable[i][j] = minCost
+    
+    #for i in range(len(costTable)):
+     #   print(costTable[i])
         
     # Create the string of transformations
     # edge cases for copy and exchange 
@@ -53,39 +56,46 @@ def dynamicEditDistance(source, destination):
     j = len(source)
     transformationString = ""
     while i > 0 or j > 0:
+        #print("i:", i, " j:", j, " cost:", costTable[i][j])
         delete = costTable[i][j - 1]
+        #print("deleteCost: ", delete)
         insert = costTable[i - 1][j]
-        copy = costTable[i -1][j -1]
-        minCost = min(delete, copy, insert)
-        if i == len(destination) and j >= len(destination):
-             killCost = costTable[i][len(destination)]
+        #print("insert: ", insert)
+        replace = costTable[i -1][j -1]
+        #print("replace: ", replace)
+        minCost = min(delete, replace, insert)
+        if i == len(destination) and j > len(destination):
+             killCost = costTable[i][len(destination)+1]
              minCost = min(minCost, killCost)
-        if i > 2 and j > 2 and source[j-1]==destination[i-2] and source[j-2] == destination[i-1]:
+        if i > 2 and j > 2 and source[j-2] == destination[i-1] and destination[i-2] == source[j-1]:
              exchange = costTable[i-2][j-2]
+             print("exchange: ", exchange)
              minCost = min(minCost, exchange)
              if minCost == exchange:
                  transformationString = 'EE' + transformationString
                  i = i - 2
                  j = j - 2
-        if minCost == copy:
-            transformationString = 'C' + transformationString
-            i = i - 1
-            j = j - 1
-        elif minCost == delete:
+        #print("minCost: ", minCost)
+        if minCost == delete:
             transformationString = 'D' + transformationString
             j = j - 1
         elif minCost == insert:
             transformationString = 'I' +  transformationString
             i = i - 1
-        
         elif minCost == killCost:
             transformationString = 'K' + transformationString
-            j = len(destination)
+            j = len(destination) +1
+            
+        if source[j-1] == destination[i-1]:
+            transformationString = 'C' + transformationString
+            i = i - 1
+            j = j - 1
         else:
             transformationString =  'R' +  transformationString
             i = i - 1
             j = j - 1
-
+        
+            
     # Print Statements
     if transformationString[0] == 'I':
             source = '_' + source
@@ -110,7 +120,7 @@ def dynamicEditDistance(source, destination):
 
 # Wrapper function
 def main():
-    source = "this_is_too_longggggggg"
+    source = "this_is_too_longgggg"
     destination = "this_is_cool"
     dynamicEditDistance(source, destination)
 
