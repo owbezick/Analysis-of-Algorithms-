@@ -47,8 +47,8 @@ def dynamicEditDistance(source, destination):
                 # Place in cost table
                 costTable[i][j] = minCost
     
-    #for i in range(len(costTable)):
-     #   print(costTable[i])
+    for i in range(len(costTable)):
+        print(costTable[i])
         
     # Create the string of transformations
     # edge cases for copy and exchange 
@@ -69,7 +69,7 @@ def dynamicEditDistance(source, destination):
              minCost = min(minCost, killCost)
         if i > 2 and j > 2 and source[j-2] == destination[i-1] and destination[i-2] == source[j-1]:
              exchange = costTable[i-2][j-2]
-             print("exchange: ", exchange)
+             #print("exchange: ", exchange)
              minCost = min(minCost, exchange)
              if minCost == exchange:
                  transformationString = 'EE' + transformationString
@@ -84,7 +84,7 @@ def dynamicEditDistance(source, destination):
             i = i - 1
         elif minCost == killCost:
             transformationString = 'K' + transformationString
-            j = len(destination) +1
+            j = len(destination) + 1
             
         if source[j-1] == destination[i-1]:
             transformationString = 'C' + transformationString
@@ -120,8 +120,8 @@ def dynamicEditDistance(source, destination):
 
 # Wrapper function
 def main():
-    source = "this_is_too_longgggg"
-    destination = "this_is_cool"
+    source = "abc"
+    destination = "acb"
     dynamicEditDistance(source, destination)
 
 
